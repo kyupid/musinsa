@@ -54,7 +54,7 @@ class CategoryServiceTest {
         return category.getId();
     }
 
-    private void saveTestCategories() {
+    private List<Category> saveTestCategories() {
         // 루트 level 0
         for (int i = 0; i < 10; i++) {
             categoryService.createCategory(rootCategoryCreateRequest(TEST_CATEGORY_NAME));
@@ -66,9 +66,17 @@ class CategoryServiceTest {
         }
 
         // level 2
+        int idAfterSaving = 0;
         for (int i = 0; i < 10; i++) {
-            categoryService.createCategory(childCategoryCreateRequest(i + 10, TEST_CATEGORY_NAME));
+            idAfterSaving = categoryService.createCategory(childCategoryCreateRequest(i + 10, TEST_CATEGORY_NAME));
         }
+
+        // 마지막 생성한 카테고리에 대한 자식 -> 자식 -> 자식 -> ... 10개 생성
+        for (int i = 0; i < 10; i++) {
+            idAfterSaving = categoryService.createCategory(childCategoryCreateRequest(idAfterSaving, TEST_CATEGORY_NAME));
+        }
+
+        return categoryDao.findAll();
     }
 
     @Test
@@ -162,11 +170,57 @@ class CategoryServiceTest {
         log.info("categories: {}", categories);
 
         //then
-        assertThat(categories.size()).isEqualTo(30);
+        assertThat(categories.size()).isEqualTo(40);
         int countMoreThanLevelTwo = categories.stream()
+                .filter(c -> c.getLevel() > 12)
+                .collect(Collectors.toList())
+                .size();
+        assertThat(countMoreThanLevelTwo).isEqualTo(0);
+    }
+
+    @Test
+    void 자식_카테고리가_없는_카테고리_삭제_테스트() {
+        //given
+        Integer id = saveTestFirstRootCategory();
+
+        //when
+        int isDeleted = categoryDao.deleteCategory(id);
+        Category category = categoryDao.findById(id);
+
+        //then
+        assertThat(isDeleted).isOne();
+        assertThat(category).isNull();
+    }
+
+    @Test
+    void 자식_카테고리가_있는_카테고리_삭제_테스트() {
+        //given
+        saveTestCategories();
+
+        //when
+        categoryService.deleteCategories(30);
+        List<Category> categoriesAfterDeleting = categoryDao.findAll();
+
+        //then
+        assertThat(categoriesAfterDeleting.size()).isEqualTo(29);
+        int countMoreThanLevelTwo = categoriesAfterDeleting.stream()
                 .filter(c -> c.getLevel() > 2)
                 .collect(Collectors.toList())
                 .size();
         assertThat(countMoreThanLevelTwo).isEqualTo(0);
+    }
+
+    @Test
+    void 마지막_자식_카테고리_삭제_테스트() {
+        //given
+        List<Category> categories = saveTestCategories();
+
+        //when
+        Integer lastChildId = categories.size();
+        categoryService.deleteCategories(lastChildId);
+        List<Category> categoriesAfterDeleting = categoryDao.findAll();
+
+        //then
+        assertThat(categoriesAfterDeleting.size()).isEqualTo(39);
     }
 }
