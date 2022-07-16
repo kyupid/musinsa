@@ -32,18 +32,24 @@ public class CategoryService {
                     .code(nextCode(lastCode))
                     .level(ROOT_LEVEL)
                     .build();
-            categoryDao.createRootCategory(category);
+            categoryDao.createCategory(category);
         } else { // 부모가 있을 경우
             Category parentCategory = categoryDao.findParentByParentId(request.getParentId());
-            String lastInsertCode = categoryDao.findLastInsertCode(request.getParentId(), parentCategory.getLevel());
+            String lastInsertCode = categoryDao.findLastInsertCode(parentCategory.getBranch(), parentCategory.getLevel());
             String extraCode;
             if (lastInsertCode == null) { // 그 부모에 대한 첫 카테고리
                 extraCode = DELIMITER + FIRST_CODE;
-            } else { // 그 부모에 대한 첫 카테고리가 아니라면
+            } else { // 그 부모에 대한 카테고리가 이미 존재한다면
                 extraCode = DELIMITER + nextCode(parentCategory.getCode());
             }
             String newCode = parentCategory.getCode() + extraCode;
-            categoryDao.createChildCategory(request.getName(), newCode, parentCategory.getLevel() + EXTRA_LEVEL);
+            Category category = Category.builder()
+                    .name(request.getName())
+                    .branch(parentCategory.getBranch())
+                    .code(newCode)
+                    .level(parentCategory.getLevel() + EXTRA_LEVEL)
+                    .build();
+            categoryDao.createCategory(category);
         }
     }
 }
