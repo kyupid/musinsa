@@ -121,7 +121,7 @@ public class CategoryService {
     public CategoryResponseDto getChildCategoriesOfSelectedCategory(Integer id) {
         Category rootParentCategory = categoryDao.findById(id);
         String startSearchCode = rootParentCategory.getCode() + DELIMITER;
-        List<Category> categories = categoryDao.findChildCategoriesOfSelectedCategory(startSearchCode);
+        List<Category> categories = categoryDao.findChildCategoriesOfSelectedCategory(rootParentCategory.getBranch(), startSearchCode);
         categories.add(0, rootParentCategory);
         return new CategoryResponseDto(categories);
     }

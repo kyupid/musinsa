@@ -21,5 +21,6 @@ public interface CategoryDao {
 
     List<Category> findAll();
 
-    List<Category> findChildCategoriesOfSelectedCategory(String startSearchCode);
+    List<Category> findChildCategoriesOfSelectedCategory(@Param("branch") String branch,
+                                                         @Param("startSearchCode") String startSearchCode);
 }

@@ -3,7 +3,6 @@ package com.example.musinsa.controller;
 import com.example.musinsa.controller.dto.CategoryCreateRequestDto;
 import com.example.musinsa.controller.dto.CategoryResponseDto;
 import com.example.musinsa.service.CategoryService;
-import com.example.musinsa.vo.Category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

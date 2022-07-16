@@ -45,6 +45,7 @@
     <select id="findChildCategoriesOfSelectedCategory" resultType="com.example.musinsa.vo.Category">
         SELECT id, branch, name, level
         FROM category
-        WHERE code LIKE CONCAT(#{startSearchCode}, '%')
+        WHERE branch = #{branch}
+        AND code LIKE CONCAT(#{startSearchCode}, '%')
     </select>
 </mapper>
