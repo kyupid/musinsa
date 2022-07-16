@@ -1,10 +1,10 @@
 package com.example.musinsa.vo;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 @Builder
+@ToString
 public class Category {
     private Integer id;
     private String branch;

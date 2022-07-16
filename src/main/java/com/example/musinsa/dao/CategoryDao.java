@@ -6,7 +6,9 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface CategoryDao {
-    void createCategory(Category category);
+    void createCategory(@Param("category") Category category);
+
+    Category findById(Integer id);
 
     Category findParentByParentId(Integer parentId);
 

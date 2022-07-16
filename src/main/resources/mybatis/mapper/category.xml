@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.musinsa.dao.CategoryDao">
-    <insert id="createCategory" parameterType="com.example.musinsa.vo.Category">
-        INSERT INTO category (`name`, `branch`, `code`, `level`)
+    <insert id="createCategory" parameterType="com.example.musinsa.vo.Category" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO category (name, branch, code, level)
         VALUES (#{category.name}, #{category.branch}, #{category.code}, #{category.level})
     </insert>
 
     <select id="findParentByParentId" resultType="com.example.musinsa.vo.Category">
+        SELECT id, branch, code, name, level
+        FROM category
+        WHERE id = #{parentId}
+    </select>
+
+    <select id="findById" resultType="com.example.musinsa.vo.Category">
         SELECT id, branch, code, name, level
         FROM category
         WHERE id = #{parentId}
