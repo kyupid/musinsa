@@ -40,7 +40,7 @@ class CategoryServiceTest {
         return categoryDTO;
     }
 
-    private Integer saveFirstRootCategoryStub() {
+    private Integer saveTestFirstRootCategory() {
         Category category = Category.builder()
                 .name("test_root_category")
                 .branch(FIRST_CODE)
@@ -49,6 +49,25 @@ class CategoryServiceTest {
                 .build();
         categoryDao.createCategory(category);
         return category.getId();
+    }
+
+    private void saveTestCategories() {
+        saveTestFirstRootCategory();
+
+        // 루트 level 0
+        for (int i = 0; i < 10; i++) {
+            rootCategoryCreateRequest(TEST_CATEGORY_NAME);
+        }
+
+        // level 1
+        for (int i = 0; i < 10; i++) {
+            childCategoryCreateRequest(i + 1, TEST_CATEGORY_NAME);
+        }
+
+        // level 2
+        for (int i = 0; i < 10; i++) {
+            childCategoryCreateRequest(i + 10, TEST_CATEGORY_NAME);
+        }
     }
 
     @Test
@@ -69,7 +88,7 @@ class CategoryServiceTest {
     @Test
     void 두번째_루트_카테고리_저장하는_테스트() {
         //given
-        saveFirstRootCategoryStub();
+        saveTestFirstRootCategory();
         CategoryCreateRequestDto request = rootCategoryCreateRequest(TEST_CATEGORY_NAME);
         Integer id = categoryService.createCategory(request);
 
@@ -84,7 +103,7 @@ class CategoryServiceTest {
     @Test
     void 첫번째_루트_카테고리의_자식_카테고리_생성_테스트() {
         //given
-        Integer firstRootCategoryId = saveFirstRootCategoryStub();
+        Integer firstRootCategoryId = saveTestFirstRootCategory();
         log.info("Category: {}", firstRootCategoryId);
 
         CategoryCreateRequestDto request = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
@@ -101,7 +120,7 @@ class CategoryServiceTest {
     @Test
     void 첫번째_루트_카테고리의_두번째_자식_카테고리_생성_테스트() {
         //given
-        Integer firstRootCategoryId = saveFirstRootCategoryStub();
+        Integer firstRootCategoryId = saveTestFirstRootCategory();
         CategoryCreateRequestDto childRequest = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
         categoryService.createCategory(childRequest);
         CategoryCreateRequestDto childRequest2 = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
@@ -118,7 +137,7 @@ class CategoryServiceTest {
     @Test
     void 첫_루트_카테고리_첫_자식_첫_자식_생성_테스트() {
         //given
-        Integer firstRootCategoryId = saveFirstRootCategoryStub();
+        Integer firstRootCategoryId = saveTestFirstRootCategory();
         CategoryCreateRequestDto childRequest = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
         Integer rootChildId = categoryService.createCategory(childRequest);
         CategoryCreateRequestDto childChildRequest = childCategoryCreateRequest(rootChildId, TEST_CATEGORY_NAME);
