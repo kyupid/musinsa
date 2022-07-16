@@ -27,4 +27,9 @@ public class CategoryApiController {
     public CategoryResponseDto childCategoriesOfSelectedCategory(@PathVariable Integer selectedId) {
         return categoryService.getChildCategoriesOfSelectedCategory(selectedId);
     }
+
+    @DeleteMapping("/{selectedId}")
+    public void deleteCategory(@PathVariable Integer selectedId) {
+        categoryService.deleteCategories(selectedId);
+    }
 }
