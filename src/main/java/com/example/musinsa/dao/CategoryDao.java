@@ -12,6 +12,6 @@ public interface CategoryDao {
 
     String findLastInsertCodeByRootLevel(Integer rootLevel);
 
-    String findLastInsertCodeByBranchAndLevel(@Param("branch") Integer branch,
+    String findLastInsertCodeByBranchAndLevel(@Param("branch") String branch,
                                               @Param("level") Integer level);
 }

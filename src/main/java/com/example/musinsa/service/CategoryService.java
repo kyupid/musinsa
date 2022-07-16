@@ -52,4 +52,8 @@ public class CategoryService {
             categoryDao.createCategory(category);
         }
     }
+
+    private String nextCode(String lastCode) {
+        return null;
+    }
 }

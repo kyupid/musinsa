@@ -12,7 +12,7 @@
         WHERE id = #{parentId}
     </select>
 
-    <select id="findLastInsertCodeByRootLevel">
+    <select id="findLastInsertCodeByRootLevel" resultType="String">
         SELECT code
         FROM category
         WHERE level = #{rootLevel}
@@ -20,7 +20,7 @@
         LIMIT 1
     </select>
 
-    <select id="findLastInsertCodeByBranchAndLevel">
+    <select id="findLastInsertCodeByBranchAndLevel" resultType="String">
         SELECT code
         FROM category
         WHERE level = #{level}
