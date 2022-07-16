@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 public class CategoryCreateRequestDto {
 
     @Nullable
-    private Integer rootId;
+    private Integer parentId;
 
     @NotNull
     private String name;
