@@ -11,7 +11,7 @@ create table category
 create table last_insert_cate_code
 (
     root_cate_id int auto_increment,
-    level int null,
+    level int not null,
     last_insert_code varchar(300) not null,
     constraint last_insert_cate_code_pk
         primary key (root_cate_id, level)
