@@ -17,10 +17,22 @@ public class CategoryService {
     private static final String DELIMITER = "|";
     private static final String FIRST_CODE = "A";
     private static final Integer EXTRA_LEVEL = 1;
+    private static final Integer ROOT_LEVEL = 0;
 
     public void create(CategoryCreateRequestDto request) {
         if (request.getParentId() == null) {
-            categoryDao.createRootCategory(request.getName());
+            // 부모가 없을 경우
+            // 1. level이 0인것중에 order by DESC limit 1 한다
+            // 2. 거기에서 next alphabet 한다
+            // 3. code = code + next alphabet
+            String lastCode = categoryDao.findLastCodeByLevel(ROOT_LEVEL);
+            Category category = Category.builder()
+                    .name(request.getName())
+                    .branch(nextCode(lastCode))
+                    .code(nextCode(lastCode))
+                    .level(ROOT_LEVEL)
+                    .build();
+            categoryDao.createRootCategory(category);
         } else { // 부모가 있을 경우
             Category parentCategory = categoryDao.findParentByParentId(request.getParentId());
             String lastInsertCode = categoryDao.findLastInsertCode(request.getParentId(), parentCategory.getLevel());

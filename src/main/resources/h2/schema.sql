@@ -1,7 +1,7 @@
 create table category
 (
     id int auto_increment,
-    branch int not null,
+    branch int null,
     name varchar(100) not null,
     code varchar(300) not null,
     level int not null,
