@@ -1,4 +1,4 @@
-package com.example.vo;
+package com.example.musinsa.vo;
 
 public class LastInsertCateCode {
     private Integer rootId;
