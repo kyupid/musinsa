@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -52,21 +55,19 @@ class CategoryServiceTest {
     }
 
     private void saveTestCategories() {
-        saveTestFirstRootCategory();
-
         // 루트 level 0
         for (int i = 0; i < 10; i++) {
-            rootCategoryCreateRequest(TEST_CATEGORY_NAME);
+            categoryService.createCategory(rootCategoryCreateRequest(TEST_CATEGORY_NAME));
         }
 
         // level 1
         for (int i = 0; i < 10; i++) {
-            childCategoryCreateRequest(i + 1, TEST_CATEGORY_NAME);
+            categoryService.createCategory(childCategoryCreateRequest(i + 1, TEST_CATEGORY_NAME));
         }
 
         // level 2
         for (int i = 0; i < 10; i++) {
-            childCategoryCreateRequest(i + 10, TEST_CATEGORY_NAME);
+            categoryService.createCategory(childCategoryCreateRequest(i + 10, TEST_CATEGORY_NAME));
         }
     }
 
@@ -149,5 +150,23 @@ class CategoryServiceTest {
 
         //then
         assertThat(category.getCode()).isEqualTo(FIRST_CODE + DELIMITER + FIRST_CODE + DELIMITER + FIRST_CODE);
+    }
+
+    @Test
+    void 테스트_카테고리_저장_테스트() {
+        //given
+        saveTestCategories();
+
+        //when
+        List<Category> categories = categoryDao.findAll();
+        log.info("categories: {}", categories);
+
+        //then
+        assertThat(categories.size()).isEqualTo(30);
+        int countMoreThanLevelTwo = categories.stream()
+                .filter(c -> c.getLevel() > 2)
+                .collect(Collectors.toList())
+                .size();
+        assertThat(countMoreThanLevelTwo).isEqualTo(0);
     }
 }
