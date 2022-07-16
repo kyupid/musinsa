@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@Transactional
 class CategoryServiceTest {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass().getName());
@@ -38,7 +39,7 @@ class CategoryServiceTest {
         return categoryDTO;
     }
 
-    private void saveStubCategory() {
+    private void saveFirstRootCategoryStub() {
         Category category = Category.builder()
                 .name("test_root_category")
                 .branch(FIRST_CODE)
@@ -63,5 +64,22 @@ class CategoryServiceTest {
 
         //then
         assertThat(category.getCode()).isEqualTo(FIRST_CODE);
+    }
+
+    @Test
+    void 두번째_루트_카테고리_저장하는_테스트() {
+        final String testCategoryName = "test_root_category";
+
+        //given
+        saveFirstRootCategoryStub();
+        CategoryCreateRequestDto request = rootCategoryCreateRequest(testCategoryName);
+        Integer id = categoryService.createCategory(request);
+
+        //when
+        Category category = categoryDao.findById(id);
+        log.info("Category: {}", category);
+
+        //then
+        assertThat(category.getCode()).isEqualTo("B");
     }
 }
