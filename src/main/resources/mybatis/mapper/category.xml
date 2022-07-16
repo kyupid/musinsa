@@ -48,4 +48,17 @@
         WHERE branch = #{branch}
         AND code LIKE CONCAT(#{startSearchCode}, '%')
     </select>
+
+    <delete id="deleteCategory">
+        DELETE
+        FROM category
+        WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteCategoriesOfSelectedCategory">
+        DELETE
+        FROM category
+        WHERE branch = #{branch}
+        AND code LIKE CONCAT(#{startSearchCode}, '%')
+    </delete>
 </mapper>

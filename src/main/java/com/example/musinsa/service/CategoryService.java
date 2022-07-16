@@ -125,4 +125,11 @@ public class CategoryService {
         categories.add(0, rootParentCategory);
         return new CategoryResponseDto(categories);
     }
+
+    public void deleteCategories(Integer id) {
+        // 자기 자신과 하위 카테고리들 같이삭제
+        Category rootParentCategory = categoryDao.findById(id);
+        categoryDao.deleteCategory(id);
+        categoryDao.deleteCategoriesOfSelectedCategory(id);
+    }
 }

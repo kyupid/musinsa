@@ -23,4 +23,8 @@ public interface CategoryDao {
 
     List<Category> findChildCategoriesOfSelectedCategory(@Param("branch") String branch,
                                                          @Param("startSearchCode") String startSearchCode);
+
+    void deleteCategory(Integer id);
+
+    void deleteCategoriesOfSelectedCategory(Integer id);
 }
