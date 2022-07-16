@@ -4,6 +4,8 @@ import com.example.musinsa.vo.Category;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface CategoryDao {
     void createCategory(@Param("category") Category category);
@@ -16,4 +18,6 @@ public interface CategoryDao {
 
     String findLastInsertCodeByBranchAndLevel(@Param("branch") String branch,
                                               @Param("level") Integer level);
+
+    List<Category> findAll();
 }

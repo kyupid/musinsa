@@ -35,4 +35,10 @@
         ORDER BY code DESC
         LIMIT 1
     </select>
+
+    <select id="findAll" resultType="com.example.musinsa.vo.Category">
+        SELECT id, branch, name, level
+        FROM category
+        ORDER BY code ASC
+    </select>
 </mapper>

@@ -1,12 +1,15 @@
 package com.example.musinsa.service;
 
 import com.example.musinsa.controller.dto.CategoryCreateRequestDto;
+import com.example.musinsa.controller.dto.CategoryResponseDto;
 import com.example.musinsa.dao.CategoryDao;
 import com.example.musinsa.vo.Category;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -108,5 +111,10 @@ public class CategoryService {
             return source;
         }
         return source.substring(0, length - 1) + (char) (lastChar + 1);
+    }
+
+    public CategoryResponseDto getAllCategories() {
+        List<Category> categories = categoryDao.findAll();
+        return new CategoryResponseDto(categories);
     }
 }
