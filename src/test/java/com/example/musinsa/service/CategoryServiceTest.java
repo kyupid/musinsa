@@ -115,4 +115,20 @@ class CategoryServiceTest {
         assertThat(category.getCode()).isEqualTo(FIRST_CODE + DELIMITER + "B");
     }
 
+    @Test
+    void 첫_루트_카테고리_첫_자식_첫_자식_생성_테스트() {
+        //given
+        Integer firstRootCategoryId = saveFirstRootCategoryStub();
+        CategoryCreateRequestDto childRequest = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
+        Integer rootChildId = categoryService.createCategory(childRequest);
+        CategoryCreateRequestDto childChildRequest = childCategoryCreateRequest(rootChildId, TEST_CATEGORY_NAME);
+        Integer id = categoryService.createCategory(childChildRequest);
+
+        //when
+        Category category = categoryDao.findById(id);
+        log.info("Category: {}", category);
+
+        //then
+        assertThat(category.getCode()).isEqualTo(FIRST_CODE + DELIMITER + FIRST_CODE + DELIMITER + FIRST_CODE);
+    }
 }
