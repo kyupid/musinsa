@@ -28,4 +28,7 @@ public interface CategoryDao {
 
     int deleteCategoriesOfSelectedCategory(@Param("branch") String branch,
                                            @Param("startSearchCode") String startSearchCode);
+
+    int updateCategoryName(@Param("id") Integer id,
+                           @Param("newName") String newName);
 }

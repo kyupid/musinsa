@@ -1,6 +1,7 @@
 package com.example.musinsa.service;
 
 import com.example.musinsa.controller.dto.CategoryCreateRequestDto;
+import com.example.musinsa.controller.dto.CategoryEditNameRequestDto;
 import com.example.musinsa.controller.dto.CategoryResponseDto;
 import com.example.musinsa.dao.CategoryDao;
 import com.example.musinsa.vo.Category;
@@ -131,5 +132,9 @@ public class CategoryService {
         Category rootParentCategory = categoryDao.findById(id);
         categoryDao.deleteCategory(id);
         categoryDao.deleteCategoriesOfSelectedCategory(rootParentCategory.getBranch(), rootParentCategory.getCode() + DELIMITER);
+    }
+
+    public void editCategoryName(CategoryEditNameRequestDto request) {
+        categoryDao.updateCategoryName(request.getId(), request.getNewName());
     }
 }
