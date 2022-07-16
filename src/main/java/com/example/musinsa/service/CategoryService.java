@@ -37,10 +37,10 @@ public class CategoryService {
             Category parentCategory = categoryDao.findParentByParentId(request.getParentId());
             String lastInsertCode = categoryDao.findLastInsertCodeByBranchAndLevel(parentCategory.getBranch(), parentCategory.getLevel());
             String extraCode;
-            if (lastInsertCode == null) { // 그 부모에 대한 첫 카테고리
+            if (lastInsertCode == null) { // 그 부모카테고리에 대한 첫 카테고리
                 extraCode = DELIMITER + FIRST_CODE;
-            } else { // 그 부모에 대한 카테고리가 이미 존재한다면
-                extraCode = DELIMITER + nextCode(parentCategory.getCode());
+            } else { // 그 부모카테고리에 대한 카테고리가 이미 존재한다면
+                extraCode = nextCode(parentCategory.getCode());
             }
             String newCode = parentCategory.getCode() + extraCode;
             Category category = Category.builder()
@@ -54,6 +54,31 @@ public class CategoryService {
     }
 
     private String nextCode(String lastCode) {
-        return null;
+        String nextCode;
+        boolean hasDelimiter = lastCode.contains(DELIMITER);
+        if (hasDelimiter) {
+            String[] splitCode = lastCode.split("\\" + DELIMITER);
+            String lastSplitCode = splitCode[splitCode.length - 1];
+            String nextAlphabet = nextAlphabet(lastSplitCode);
+            splitCode[splitCode.length - 1] = nextAlphabet;
+            nextCode = String.join(DELIMITER, splitCode);
+        } else {
+            nextCode = nextAlphabet(lastCode);
+        }
+        return nextCode;
+    }
+
+    private String nextAlphabet(String source) {
+        int length = source.length();
+        char lastChar = source.charAt(length - 1);
+        if (lastChar == 'Z') {
+            if (length == 1) {
+                return "AA";
+            }
+            source = nextAlphabet(source.substring(0, length - 1));
+            source += "A";
+            return source;
+        }
+        return source.substring(0, length - 1) + (char) (lastChar + 1);
     }
 }
