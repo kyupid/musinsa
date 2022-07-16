@@ -11,4 +11,21 @@
         FROM category
         WHERE id = #{parentId}
     </select>
+
+    <select id="findLastInsertCodeByRootLevel">
+        SELECT code
+        FROM category
+        WHERE level = #{rootLevel}
+        ORDER BY code DESC
+        LIMIT 1
+    </select>
+
+    <select id="findLastInsertCodeByBranchAndLevel">
+        SELECT code
+        FROM category
+        WHERE level = #{level}
+        AND branch = #{branch}
+        ORDER BY code DESC
+        LIMIT 1
+    </select>
 </mapper>
