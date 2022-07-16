@@ -20,4 +20,6 @@ public interface CategoryDao {
                                               @Param("level") Integer level);
 
     List<Category> findAll();
+
+    List<Category> findChildCategoriesOfSelectedCategory(String startSearchCode);
 }

@@ -41,4 +41,10 @@
         FROM category
         ORDER BY code ASC
     </select>
+
+    <select id="findChildCategoriesOfSelectedCategory" resultType="com.example.musinsa.vo.Category">
+        SELECT id, branch, name, level
+        FROM category
+        WHERE code LIKE CONCAT(#{startSearchCode}, '%')
+    </select>
 </mapper>
