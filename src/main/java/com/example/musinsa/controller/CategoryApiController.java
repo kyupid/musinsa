@@ -1,13 +1,10 @@
 package com.example.musinsa.controller;
 
 import com.example.musinsa.controller.dto.CategoryCreateRequestDto;
+import com.example.musinsa.controller.dto.CategoryResponseDto;
 import com.example.musinsa.service.CategoryService;
-import com.example.musinsa.vo.Category;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,5 +16,10 @@ public class CategoryApiController {
     @PostMapping
     public Integer createCategory(@RequestBody CategoryCreateRequestDto request) {
         return categoryService.createCategory(request);
+    }
+
+    @GetMapping
+    public CategoryResponseDto allCategories() {
+        return categoryService.getAllCategories();
     }
 }

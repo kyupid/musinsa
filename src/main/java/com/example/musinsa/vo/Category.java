@@ -6,6 +6,8 @@ import lombok.*;
 @Getter
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Category {
     private Integer id;
     private String branch;
