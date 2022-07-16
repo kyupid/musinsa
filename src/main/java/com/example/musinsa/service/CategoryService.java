@@ -134,7 +134,7 @@ public class CategoryService {
         categoryDao.deleteCategoriesOfSelectedCategory(rootParentCategory.getBranch(), rootParentCategory.getCode() + DELIMITER);
     }
 
-    public void editCategoryName(CategoryEditNameRequestDto request) {
-        categoryDao.updateCategoryName(request.getId(), request.getNewName());
+    public int editCategoryName(CategoryEditNameRequestDto request) {
+        return categoryDao.updateCategoryName(request.getId(), request.getNewName());
     }
 }

@@ -1,6 +1,7 @@
 package com.example.musinsa.service;
 
 import com.example.musinsa.controller.dto.CategoryCreateRequestDto;
+import com.example.musinsa.controller.dto.CategoryEditNameRequestDto;
 import com.example.musinsa.dao.CategoryDao;
 import com.example.musinsa.vo.Category;
 import org.junit.jupiter.api.Test;
@@ -222,5 +223,22 @@ class CategoryServiceTest {
 
         //then
         assertThat(categoriesAfterDeleting.size()).isEqualTo(39);
+    }
+
+    @Test
+    void 카테고리_이름_수정_테스트() {
+        //given
+        saveTestFirstRootCategory();
+        final String newName = "new category name";
+        CategoryEditNameRequestDto request = new CategoryEditNameRequestDto(1, newName);
+
+        //when
+        int isUpdated = categoryService.editCategoryName(request);
+
+        //then
+        Category category = categoryDao.findById(request.getId());
+
+        assertThat(isUpdated).isOne();
+        assertThat(category.getName()).isEqualTo(newName);
     }
 }
