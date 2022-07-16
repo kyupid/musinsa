@@ -185,11 +185,11 @@ class CategoryServiceTest {
         Integer id = saveTestFirstRootCategory();
 
         //when
-        int isDeleted = categoryDao.deleteCategory(id);
-        Category category = categoryDao.findById(id);
+        categoryService.deleteCategories(id);
 
         //then
-        assertThat(isDeleted).isOne();
+        Category category = categoryDao.findById(id);
+
         assertThat(category).isNull();
     }
 
@@ -200,9 +200,10 @@ class CategoryServiceTest {
 
         //when
         categoryService.deleteCategories(30);
-        List<Category> categoriesAfterDeleting = categoryDao.findAll();
 
         //then
+        List<Category> categoriesAfterDeleting = categoryDao.findAll();
+
         assertThat(categoriesAfterDeleting.size()).isEqualTo(29);
         int countMoreThanLevelTwo = categoriesAfterDeleting.stream()
                 .filter(c -> c.getLevel() > 2)
@@ -219,9 +220,10 @@ class CategoryServiceTest {
         //when
         Integer lastChildId = categories.size();
         categoryService.deleteCategories(lastChildId);
-        List<Category> categoriesAfterDeleting = categoryDao.findAll();
 
         //then
+        List<Category> categoriesAfterDeleting = categoryDao.findAll();
+
         assertThat(categoriesAfterDeleting.size()).isEqualTo(39);
     }
 
