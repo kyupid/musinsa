@@ -28,6 +28,7 @@ class CategoryServiceTest {
     private static final String FIRST_CODE = "A";
     private static final Integer EXTRA_LEVEL = 1;
     private static final Integer ROOT_LEVEL = 0;
+    private static final String TEST_CATEGORY_NAME = "test_category";
 
     private CategoryCreateRequestDto rootCategoryCreateRequest(String testName) {
         CategoryCreateRequestDto categoryDTO = new CategoryCreateRequestDto(null, testName);
@@ -52,10 +53,8 @@ class CategoryServiceTest {
 
     @Test
     void 첫_루트_카테고리_저장하는_테스트() {
-        final String testCategoryName = "test_root_category_2";
-
         //given
-        CategoryCreateRequestDto request = rootCategoryCreateRequest(testCategoryName);
+        CategoryCreateRequestDto request = rootCategoryCreateRequest(TEST_CATEGORY_NAME);
         Integer id = categoryService.createCategory(request);
 
         //when
@@ -69,11 +68,9 @@ class CategoryServiceTest {
 
     @Test
     void 두번째_루트_카테고리_저장하는_테스트() {
-        final String testCategoryName = "test_root_category";
-
         //given
         saveFirstRootCategoryStub();
-        CategoryCreateRequestDto request = rootCategoryCreateRequest(testCategoryName);
+        CategoryCreateRequestDto request = rootCategoryCreateRequest(TEST_CATEGORY_NAME);
         Integer id = categoryService.createCategory(request);
 
         //when
@@ -86,13 +83,11 @@ class CategoryServiceTest {
 
     @Test
     void 첫번째_루트_카테고리의_자식_카테고리_생성_테스트() {
-        final String testCategoryName = "test_root_category";
-
         //given
         Integer firstRootCategoryId = saveFirstRootCategoryStub();
         log.info("Category: {}", firstRootCategoryId);
 
-        CategoryCreateRequestDto request = childCategoryCreateRequest(firstRootCategoryId, testCategoryName);
+        CategoryCreateRequestDto request = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
         Integer id = categoryService.createCategory(request);
 
         //when
@@ -102,4 +97,22 @@ class CategoryServiceTest {
         //then
         assertThat(category.getCode()).isEqualTo(FIRST_CODE + DELIMITER + FIRST_CODE);
     }
+
+    @Test
+    void 첫번째_루트_카테고리의_두번째_자식_카테고리_생성_테스트() {
+        //given
+        Integer firstRootCategoryId = saveFirstRootCategoryStub();
+        CategoryCreateRequestDto childRequest = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
+        categoryService.createCategory(childRequest);
+        CategoryCreateRequestDto childRequest2 = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
+        Integer id = categoryService.createCategory(childRequest2);
+
+        //when
+        Category category = categoryDao.findById(id);
+        log.info("Category: {}", category);
+
+        //then
+        assertThat(category.getCode()).isEqualTo(FIRST_CODE + DELIMITER + "B");
+    }
+
 }
