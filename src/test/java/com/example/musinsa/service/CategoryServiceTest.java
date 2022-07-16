@@ -39,7 +39,7 @@ class CategoryServiceTest {
         return categoryDTO;
     }
 
-    private void saveFirstRootCategoryStub() {
+    private Integer saveFirstRootCategoryStub() {
         Category category = Category.builder()
                 .name("test_root_category")
                 .branch(FIRST_CODE)
@@ -47,6 +47,7 @@ class CategoryServiceTest {
                 .level(ROOT_LEVEL)
                 .build();
         categoryDao.createCategory(category);
+        return category.getId();
     }
 
     @Test
@@ -81,5 +82,24 @@ class CategoryServiceTest {
 
         //then
         assertThat(category.getCode()).isEqualTo("B");
+    }
+
+    @Test
+    void 첫번째_루트_카테고리의_자식_카테고리_생성_테스트() {
+        final String testCategoryName = "test_root_category";
+
+        //given
+        Integer firstRootCategoryId = saveFirstRootCategoryStub();
+        log.info("Category: {}", firstRootCategoryId);
+
+        CategoryCreateRequestDto request = childCategoryCreateRequest(firstRootCategoryId, testCategoryName);
+        Integer id = categoryService.createCategory(request);
+
+        //when
+        Category category = categoryDao.findById(id);
+        log.info("Category: {}", category);
+
+        //then
+        assertThat(category.getCode()).isEqualTo(FIRST_CODE + DELIMITER + FIRST_CODE);
     }
 }

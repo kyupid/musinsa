@@ -50,14 +50,20 @@ public class CategoryService {
             return category.getId();
         } else { // 부모가 있을 경우
             Category parentCategory = categoryDao.findParentByParentId(request.getParentId());
-            String lastInsertCode = categoryDao.findLastInsertCodeByBranchAndLevel(parentCategory.getBranch(), parentCategory.getLevel());
+
+            // lastInsertCode는 request의 level이 필ㅇ하기때문에 parentCategory.getLevel()의 +1을 해준다
+            String lastInsertCode = categoryDao.findLastInsertCodeByBranchAndLevel(parentCategory.getBranch(), parentCategory.getLevel() + EXTRA_LEVEL);
             String extraCode;
             if (lastInsertCode == null) { // 그 부모카테고리에 대한 첫 카테고리
+                log.info("부모카테고리가 있고 lastInsertCode가 null입니다");
                 extraCode = DELIMITER + FIRST_CODE;
+                log.info("부모가있을ㅇ경우의 extraCode는: {}", extraCode);
             } else { // 그 부모카테고리에 대한 카테고리가 이미 존재한다면
+                log.info("부모카테고리가 있고 lastInsertCode가 null이 아닙니니다");
                 extraCode = nextCode(parentCategory.getCode());
             }
             String newCode = parentCategory.getCode() + extraCode;
+            log.info("부모가있을ㅇ경우의 newCode는: {}", newCode);
             Category category = Category.builder()
                     .name(request.getName())
                     .branch(parentCategory.getBranch())
