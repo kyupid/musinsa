@@ -46,7 +46,6 @@ public class CategoryApiController {
         categoryService.deleteCategories(selectedId);
     }
 
-    @CachePut(key = "#root.target.CACHE_KEY_FOR_ALL_CATEGORY", value = "categories")
     @PatchMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void editCategoryName(@RequestBody @Valid CategoryEditNameRequestDto request) {
