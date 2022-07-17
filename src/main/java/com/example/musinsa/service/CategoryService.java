@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 
@@ -26,48 +27,46 @@ public class CategoryService {
     private static final Integer ROOT_LEVEL = 0;
 
     public Integer createCategory(CategoryCreateRequestDto request) {
-        if (request.getParentId() == null) {
-            String lastCode = categoryDao.findLastInsertCodeByRootLevel(ROOT_LEVEL);
-            Category category;
-            if (lastCode == null) {
-                category = Category.builder()
-                        .name(request.getName())
-                        .branch(FIRST_CODE)
-                        .code(FIRST_CODE)
-                        .level(ROOT_LEVEL)
-                        .build();
-            } else {
-                category = Category.builder()
-                        .name(request.getName())
-                        .branch(nextCode(lastCode))
-                        .code(nextCode(lastCode))
-                        .level(ROOT_LEVEL)
-                        .build();
-            }
-            categoryDao.createCategory(category);
-            return category.getId();
-        } else { // 부모가 있을 경우
-            Category parentCategory = categoryDao.findParentByParentId(request.getParentId());
-            // lastInsertCode는 request의 level이 필ㅇ하기때문에 parentCategory.getLevel()의 +1을 해준다
-            String lastInsertCode = categoryDao.findLastInsertCodeByBranchAndLevel(parentCategory.getBranch(), parentCategory.getLevel() + EXTRA_LEVEL);
-            String extraCode;
-            String newCode;
-            if (lastInsertCode == null) { // 그 부모카테고리에 대한 첫 카테고리
-                extraCode = DELIMITER + FIRST_CODE;
-                newCode = parentCategory.getCode() + extraCode;
-            } else { // 그 부모카테고리에 대한 카테고리가 이미 존재한다면
-                extraCode = nextCode(lastInsertCode);
-                newCode = extraCode;
-            }
-            Category category = Category.builder()
+        Category category = request.getParentId() == null ? getCreatingRootCategory(request) : getCreatingChildCategory(request);
+        categoryDao.createCategory(category);
+        return category.getId();
+    }
+
+    private Category getCreatingRootCategory(CategoryCreateRequestDto request) {
+        String lastInsertCode = categoryDao.findLastInsertCodeByRootLevel(ROOT_LEVEL);
+        Category category;
+        if (StringUtils.isEmpty(lastInsertCode)) {
+            category = Category.builder()
                     .name(request.getName())
-                    .branch(parentCategory.getBranch())
-                    .code(newCode)
-                    .level(parentCategory.getLevel() + EXTRA_LEVEL)
+                    .branch(FIRST_CODE)
+                    .code(FIRST_CODE)
+                    .level(ROOT_LEVEL)
                     .build();
-            categoryDao.createCategory(category);
-            return category.getId();
+        } else {
+            category = Category.builder()
+                    .name(request.getName())
+                    .branch(nextCode(lastInsertCode))
+                    .code(nextCode(lastInsertCode))
+                    .level(ROOT_LEVEL)
+                    .build();
         }
+        return category;
+    }
+
+    private Category getCreatingChildCategory(CategoryCreateRequestDto request) {
+        Category parentCategory = categoryDao.findParentByParentId(request.getParentId());
+        return Category.builder()
+                .name(request.getName())
+                .branch(parentCategory.getBranch())
+                .code(getNewCode(parentCategory))
+                .level(parentCategory.getLevel() + EXTRA_LEVEL)
+                .build();
+    }
+
+    private String getNewCode(Category parentCategory) {
+        // lastInsertCode는 parentCategory를 이용해 parentCategory.getLevel()의 +1을 해준다
+        String lastInsertCode = categoryDao.findLastInsertCodeByBranchAndLevel(parentCategory.getBranch(), parentCategory.getLevel() + EXTRA_LEVEL);
+        return lastInsertCode == null ? parentCategory.getCode() + DELIMITER + FIRST_CODE : nextCode(lastInsertCode);
     }
 
     private String nextCode(String lastCode) {
