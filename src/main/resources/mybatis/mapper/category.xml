@@ -67,4 +67,8 @@
         SET name = #{newName}
         WHERE id = #{id}
     </update>
+
+    <select id="existsById" resultType="boolean">
+        SELECT EXISTS(SELECT * FROM category WHERE id = #{id})
+    </select>
 </mapper>

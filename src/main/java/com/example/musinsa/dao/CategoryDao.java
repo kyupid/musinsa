@@ -31,4 +31,6 @@ public interface CategoryDao {
 
     int updateCategoryName(@Param("id") Integer id,
                            @Param("newName") String newName);
+
+    boolean existsById(Integer parentId);
 }

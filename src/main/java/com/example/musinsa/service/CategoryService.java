@@ -4,6 +4,7 @@ import com.example.musinsa.controller.dto.CategoryCreateRequestDto;
 import com.example.musinsa.controller.dto.CategoryEditNameRequestDto;
 import com.example.musinsa.controller.dto.CategoryResponseDto;
 import com.example.musinsa.dao.CategoryDao;
+import com.example.musinsa.service.exception.ParentCategoryNotFoundException;
 import com.example.musinsa.vo.Category;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,10 @@ public class CategoryService {
     private static final Integer ROOT_LEVEL = 0;
 
     public Integer createCategory(CategoryCreateRequestDto request) {
+        boolean exists = categoryDao.existsById(request.getParentId());
+        if (!exists) {
+            throw new ParentCategoryNotFoundException("존재하지 않는 부모 카테고리");
+        }
         Category category = request.getParentId() == null ? getCreatingRootCategory(request) : getCreatingChildCategory(request);
         categoryDao.createCategory(category);
         return category.getId();
