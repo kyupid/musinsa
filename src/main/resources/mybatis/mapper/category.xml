@@ -37,13 +37,13 @@
     </select>
 
     <select id="findAll" resultType="com.example.musinsa.vo.Category">
-        SELECT id, branch, name, level
+        SELECT id, code, branch, name, level
         FROM category
         ORDER BY code ASC
     </select>
 
     <select id="findChildCategoriesOfSelectedCategory" resultType="com.example.musinsa.vo.Category">
-        SELECT id, branch, name, level
+        SELECT id, code, branch, name, level
         FROM category
         WHERE branch = #{branch}
           AND code LIKE CONCAT(#{startSearchCode}, '%')

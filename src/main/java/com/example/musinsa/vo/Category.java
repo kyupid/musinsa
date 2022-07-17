@@ -12,9 +12,6 @@ public class Category {
     private Integer id;
     private String branch;
     private String name;
-
-    @JsonIgnore
     private String code;
-
     private Integer level;
 }
