@@ -15,6 +15,10 @@
         let categories = [[ ${categories.categories}]];
 
         let resultHTML = '';
+        if (location.pathname === '/') {
+            resultHTML += `<h1>모든 카테고리 조회 페이지</h1>`
+            resultHTML += `<h3>카테고리 버튼을 누르면 자식 카테고리들에 대한 조회 가능</h3><br>`
+        }
         categories.forEach((currentElement) => {
             let id = currentElement.id;
             let name = currentElement.name;
