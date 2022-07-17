@@ -5,11 +5,15 @@ import com.example.musinsa.controller.dto.CategoryEditNameRequestDto;
 import com.example.musinsa.controller.dto.CategoryResponseDto;
 import com.example.musinsa.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@EnableCaching
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/categories")
