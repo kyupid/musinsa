@@ -30,7 +30,7 @@ public class CategoryService {
     public Integer createCategory(CategoryCreateRequestDto request) {
         boolean exists = categoryDao.existsById(request.getParentId());
         if (!exists) {
-            throw new ParentCategoryNotFoundException("존재하지 않는 부모 카테고리");
+            throw new ParentCategoryNotFoundException("입력하신 parentId는 존재하지 않습니다.");
         }
         Category category = request.getParentId() == null ? getCreatingRootCategory(request) : getCreatingChildCategory(request);
         categoryDao.createCategory(category);
