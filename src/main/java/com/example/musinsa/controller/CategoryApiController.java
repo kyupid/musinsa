@@ -5,8 +5,6 @@ import com.example.musinsa.controller.dto.CategoryEditNameRequestDto;
 import com.example.musinsa.controller.dto.CategoryResponseDto;
 import com.example.musinsa.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +21,8 @@ public class CategoryApiController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Integer createCategory(@RequestBody @Valid CategoryCreateRequestDto request) {
-        return categoryService.createCategory(request);
+    public void createCategory(@RequestBody @Valid CategoryCreateRequestDto request) {
+        categoryService.createCategory(request);
     }
 
     @GetMapping

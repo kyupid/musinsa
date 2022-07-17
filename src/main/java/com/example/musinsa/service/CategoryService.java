@@ -34,10 +34,11 @@ public class CategoryService {
 
     public static final String CACHE_KEY_FOR_ALL_CATEGORY = "all";
 
-    public Integer createCategory(CategoryCreateRequestDto request) {
+    @CachePut(key = "#root.target.CACHE_KEY_FOR_ALL_CATEGORY", value = "categories")
+    public CategoryResponseDto createCategory(CategoryCreateRequestDto request) {
         Category category = request.getParentId() == null ? getCreatingRootCategory(request) : getCreatingChildCategory(request);
         categoryDao.createCategory(category);
-        return category.getId();
+        return new CategoryResponseDto(categoryDao.findAll());
     }
 
     private Category getCreatingRootCategory(CategoryCreateRequestDto request) {
