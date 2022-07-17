@@ -32,7 +32,6 @@ public class CategoryApiController {
         return categoryService.getAllCategories();
     }
 
-    @Cacheable(key = "#selectedId", value = "categories")
     @GetMapping("/{selectedId}")
     public CategoryResponseDto childCategoriesOfSelectedCategory(@PathVariable Integer selectedId) {
         return categoryService.getChildCategoriesOfSelectedCategory(selectedId);
