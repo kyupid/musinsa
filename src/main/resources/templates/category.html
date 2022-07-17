@@ -7,6 +7,8 @@
 </head>
 <body>
 </body>
+<br>
+<a>root 카테고리 생성</a>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function () {
@@ -22,6 +24,11 @@
             resultHTML += `</pre>`;
         });
 
+        if (location.pathname === '/') {
+            resultHTML += `<br><a class="rootC" href="#">root 카테고리 생성</a>`
+        } else {
+            resultHTML += `<br><a href="/">홈으로 돌아가기</a>`
+        }
         document.body.innerHTML = resultHTML;
 
         $(".category").on("click", function (e) {
@@ -31,6 +38,9 @@
 
         $(".c").on("click", function () {
             let name = prompt("생성할 자식카테고리 이름을 입력해주세요.");
+            if (name === '' || name === null) {
+                return false;
+            }
             let parentId = $(this).siblings().attr("id");
             let data = JSON.stringify({
                 name: name,
@@ -51,8 +61,34 @@
             })
         })
 
+        $(".rootC").on("click", function () {
+            let name = prompt("생성할 root카테고리 이름을 입력해주세요.");
+            if (name === '' || name === null) {
+                return false;
+            }
+            let data = JSON.stringify({
+                name: name
+            });
+            $.ajax({
+                url: "/api/categories",
+                data: data,
+                method: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    alert("예기치못한에러");
+                }
+            })
+        })
+
         $(".u").on("click", function () {
             let newName = prompt("변경할 새로운 이름을 입력해주세요.");
+            if (newName === '' || newName === null) {
+                return false;
+            }
             let id = $(this).siblings().attr("id");
             let data = JSON.stringify({
                 newName: newName,
