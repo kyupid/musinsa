@@ -5,7 +5,7 @@
 1. 상위 카테고리를 이용해, 해당 카테고리의 하위의 모든 카테고리를 조회가 가능해야한다.
 2. 상위 카테고리를 지정하지 않을 시, 전체 카테고리를 반환해야한다.
 
-두 조건 모두 충족하여 구현하였습니다.
+두 조건 모두 충족하여 구현하였습니다.   
 추가적으로 프론트 페이지 개발과 전체 카테고리 조회시 [캐시처리](https://github.com/kyupid/musinsa/pull/1)를 하였습니다.
 
 프론트엔드: http://localhost:8080   
@@ -137,8 +137,32 @@ flat 구조
 ## API 명세
 Base URL: http://localhost:8080/api/categories
 
-URL: GET `/`
-설명: 모든 카테고리 조회
+URL: GET `/`   
+설명: 모든 카테고리 조회   
+Response   
+```json
+{
+    "categories": [
+        {
+            "id": 1,
+            "branch": "A",
+            "name": "카테고리_1",
+            "code": "A",
+            "level": 0
+        },
+        {
+            "id": 6,
+            "branch": "A",
+            "name": "카테고리_1_1",
+            "code": "A|A",
+            "level": 1
+        }
+    ]
+}
+```
+
+URL: GET `/{selectedId}`   
+설명: 선택 카테고리 포함 하위 카테고리 조회    
 Response
 ```json
 {
@@ -161,32 +185,8 @@ Response
 }
 ```
 
-URL: GET `/{selectedId}`
-설명: 선택 카테고리 포함 하위 카테고리 조회
-Response
-```json
-{
-    "categories": [
-        {
-            "id": 1,
-            "branch": "A",
-            "name": "카테고리_1",
-            "code": "A",
-            "level": 0
-        },
-        {
-            "id": 6,
-            "branch": "A",
-            "name": "카테고리_1_1",
-            "code": "A|A",
-            "level": 1
-        }
-    ]
-}
-```
-
-URL: POST `/`
-설명: 루트 카테고리 생성
+URL: POST `/`   
+설명: 루트 카테고리 생성   
 Request
 ```json
 {
@@ -198,8 +198,8 @@ Response
 201 Created
 ```
 
-URL: POST `/`
-설명: 하위 카테고리 생성
+URL: POST `/`   
+설명: 하위 카테고리 생성   
 Request
 ```json
 {
@@ -212,15 +212,15 @@ Response
 201 Created
 ```
 
-URL: DELETE `/{selectedId}`
-설명: 해당 카테고리포함 하위카테고리 모두 삭제
+URL: DELETE `/{selectedId}`   
+설명: 해당 카테고리포함 하위카테고리 모두 삭제   
 Response
 ```
 204 No content
 ```
 
-URL: PATCH `/`
-설명: 카테고리 이름 수정
+URL: PATCH `/`   
+설명: 카테고리 이름 수정   
 Response
 ```
 204 No content
