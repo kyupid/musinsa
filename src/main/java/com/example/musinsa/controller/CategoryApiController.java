@@ -26,7 +26,7 @@ public class CategoryApiController {
         return categoryService.createCategory(request);
     }
 
-    @Cacheable(value = "categories")
+    @Cacheable(key = "#root.methodName", value = "categories")
     @GetMapping
     public CategoryResponseDto allCategories() {
         return categoryService.getAllCategories();
