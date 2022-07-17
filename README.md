@@ -8,11 +8,18 @@
 두 조건 모두 충족하여 구현하였습니다.
 추가적으로 프론트 페이지 개발과 전체 카테고리 조회시 [캐시처리](https://github.com/kyupid/musinsa/pull/1)를 하였습니다.
 
-프론트엔드: http://localhost:8080
+프론트엔드: http://localhost:8080   
 백엔드: http://localhost:800/api/categories
 
 ![2022-07-17_22-07-27](https://user-images.githubusercontent.com/59721293/179399830-fa2fdc47-5f34-4a0f-bca3-c17f4031eb08.jpg)
 
+## 기술 스택
+
+- Java
+- Spring
+- MyBatis
+- H2
+- Redis
 
 ## 실행 방법
 리눅스 기준
