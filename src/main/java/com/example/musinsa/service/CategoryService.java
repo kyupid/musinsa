@@ -28,10 +28,6 @@ public class CategoryService {
     private static final Integer ROOT_LEVEL = 0;
 
     public Integer createCategory(CategoryCreateRequestDto request) {
-        boolean exists = categoryDao.existsById(request.getParentId());
-        if (!exists) {
-            throw new ParentCategoryNotFoundException("입력하신 parentId는 존재하지 않습니다.");
-        }
         Category category = request.getParentId() == null ? getCreatingRootCategory(request) : getCreatingChildCategory(request);
         categoryDao.createCategory(category);
         return category.getId();
@@ -59,6 +55,11 @@ public class CategoryService {
     }
 
     private Category getCreatingChildCategory(CategoryCreateRequestDto request) {
+        boolean exists = categoryDao.existsById(request.getParentId());
+        if (!exists) {
+            throw new ParentCategoryNotFoundException("입력하신 parentId는 존재하지 않습니다.");
+        }
+
         Category parentCategory = categoryDao.findParentByParentId(request.getParentId());
         return Category.builder()
                 .name(request.getName())
