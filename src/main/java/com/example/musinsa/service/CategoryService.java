@@ -119,11 +119,12 @@ public class CategoryService {
         return new CategoryResponseDto(categories);
     }
 
-    public void deleteCategories(Integer id) {
+    public List<Category> deleteCategories(Integer id) {
         // 자기 자신과 하위 카테고리들 같이삭제
         Category rootParentCategory = categoryDao.findById(id);
         categoryDao.deleteCategory(id);
         categoryDao.deleteCategoriesOfSelectedCategory(rootParentCategory.getBranch(), rootParentCategory.getCode() + DELIMITER);
+        return categoryDao.findAll();
     }
 
     public int editCategoryName(CategoryEditNameRequestDto request) {
