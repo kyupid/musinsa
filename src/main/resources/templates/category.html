@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리</title>
+</head>
+<body>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+        let categories = [[ ${categories.categories}]];
+
+        let resultHTML = '';
+        categories.forEach((currentElement) => {
+            let id = currentElement.id;
+            let name = currentElement.name;
+            resultHTML += `<pre>`;
+            resultHTML += `<button class="category" id="${id}">${name}</button>`;
+            resultHTML += `|<a class="c" href="#">카테고리생성</a>|<a class="u" href="#">수정</a>|<a class="d" href="#">삭제</a>`
+            resultHTML += `</pre>`;
+        });
+
+        document.body.innerHTML = resultHTML;
+
+        $(".category").on("click", function (e) {
+            let categoryId = e.target.getAttribute('id');
+            location.href = '/' + categoryId;
+        });
+
+        $(".c").on("click", function () {
+            let name = prompt("생성할 자식카테고리 이름을 입력해주세요.");
+            let parentId = $(this).siblings().attr("id");
+            let data = JSON.stringify({
+                name: name,
+                parentId: parentId
+            });
+            $.ajax({
+                url: "/api/categories",
+                data: data,
+                method: "POST",
+                dataType: "json",
+                contentType: "application/json",
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    alert("예기치못한에러");
+                }
+            })
+        })
+
+        $(".u").on("click", function () {
+            let newName = prompt("변경할 새로운 이름을 입력해주세요.");
+            let id = $(this).siblings().attr("id");
+            let data = JSON.stringify({
+                newName: newName,
+                id: id
+            });
+            $.ajax({
+                url: "/api/categories",
+                data: data,
+                method: "PATCH",
+                dataType: "json",
+                contentType: "application/json",
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    alert("예기치못한에러");
+                }
+            })
+        })
+
+        $(".d").on("click", function () {
+            if ((confirm("하위 카테고리가 모두 삭제됩니다. 진행?"))) {
+                let id = $(this).siblings().attr("id");
+                $.ajax({
+                    url: "/api/categories/" + id,
+                    method: "DELETE",
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function () {
+                        location.reload();
+                        alert("삭제 완료");
+                    },
+                    error: function () {
+                        alert("예기치못한에러");
+                    }
+                })
+            }
+        })
+    });
+</script>
+</html>
