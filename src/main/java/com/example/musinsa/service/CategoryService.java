@@ -9,6 +9,9 @@ import com.example.musinsa.service.exception.ParentCategoryNotFoundException;
 import com.example.musinsa.vo.Category;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
@@ -19,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
+@EnableCaching
 public class CategoryService {
 
     private final CategoryDao categoryDao;
@@ -27,6 +31,8 @@ public class CategoryService {
     private static final String FIRST_CODE = "A";
     private static final Integer EXTRA_LEVEL = 1;
     private static final Integer ROOT_LEVEL = 0;
+
+    public static final String CACHE_KEY_FOR_ALL_CATEGORY = "all";
 
     public Integer createCategory(CategoryCreateRequestDto request) {
         Category category = request.getParentId() == null ? getCreatingRootCategory(request) : getCreatingChildCategory(request);
@@ -106,6 +112,7 @@ public class CategoryService {
         return source.substring(0, length - 1) + (char) (lastChar + 1);
     }
 
+    @Cacheable(key = "#root.target.CACHE_KEY_FOR_ALL_CATEGORY", value = "categories")
     public CategoryResponseDto getAllCategories() {
         List<Category> categories = categoryDao.findAll();
         return new CategoryResponseDto(categories);
@@ -119,12 +126,13 @@ public class CategoryService {
         return new CategoryResponseDto(categories);
     }
 
-    public List<Category> deleteCategories(Integer id) {
+    @CachePut(key = "#root.target.CACHE_KEY_FOR_ALL_CATEGORY", value = "categories")
+    public CategoryResponseDto deleteCategories(Integer id) {
         // 자기 자신과 하위 카테고리들 같이삭제
         Category rootParentCategory = categoryDao.findById(id);
         categoryDao.deleteCategory(id);
         categoryDao.deleteCategoriesOfSelectedCategory(rootParentCategory.getBranch(), rootParentCategory.getCode() + DELIMITER);
-        return categoryDao.findAll();
+        return new CategoryResponseDto(categoryDao.findAll());
     }
 
     public int editCategoryName(CategoryEditNameRequestDto request) {
