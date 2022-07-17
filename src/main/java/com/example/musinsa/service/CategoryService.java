@@ -4,6 +4,7 @@ import com.example.musinsa.controller.dto.CategoryCreateRequestDto;
 import com.example.musinsa.controller.dto.CategoryEditNameRequestDto;
 import com.example.musinsa.controller.dto.CategoryResponseDto;
 import com.example.musinsa.dao.CategoryDao;
+import com.example.musinsa.service.exception.CategoryNotUpdatedException;
 import com.example.musinsa.service.exception.ParentCategoryNotFoundException;
 import com.example.musinsa.vo.Category;
 import lombok.RequiredArgsConstructor;
@@ -125,7 +126,13 @@ public class CategoryService {
         categoryDao.deleteCategoriesOfSelectedCategory(rootParentCategory.getBranch(), rootParentCategory.getCode() + DELIMITER);
     }
 
-    public int editCategoryName(CategoryEditNameRequestDto request) {
-        return categoryDao.updateCategoryName(request.getId(), request.getNewName());
+    public List<Category> editCategoryName(CategoryEditNameRequestDto request) {
+        int queryResult = categoryDao.updateCategoryName(request.getId(), request.getNewName());
+        boolean isUpdated = (queryResult == 1);
+        if (isUpdated) {
+            return categoryDao.findAll();
+        } else {
+            throw new CategoryNotUpdatedException("카테고리가 정상적으로 업데이트 되지 않았습니다.");
+        }
     }
 }
