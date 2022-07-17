@@ -126,13 +126,11 @@ public class CategoryService {
         categoryDao.deleteCategoriesOfSelectedCategory(rootParentCategory.getBranch(), rootParentCategory.getCode() + DELIMITER);
     }
 
-    public List<Category> editCategoryName(CategoryEditNameRequestDto request) {
+    public int editCategoryName(CategoryEditNameRequestDto request) {
         int queryResult = categoryDao.updateCategoryName(request.getId(), request.getNewName());
-        boolean isUpdated = (queryResult == 1);
-        if (isUpdated) {
-            return categoryDao.findAll();
-        } else {
-            throw new CategoryNotUpdatedException("카테고리가 정상적으로 업데이트 되지 않았습니다.");
+        if (queryResult != 1) {
+            throw new CategoryNotUpdatedException("요청 카테고리 id에 대한 정보가 없어 업데이트에 실패하였습니다.");
         }
+        return queryResult;
     }
 }
