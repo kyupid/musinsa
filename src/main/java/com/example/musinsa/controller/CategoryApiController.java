@@ -7,6 +7,8 @@ import com.example.musinsa.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/categories")
@@ -15,7 +17,7 @@ public class CategoryApiController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public Integer createCategory(@RequestBody CategoryCreateRequestDto request) {
+    public Integer createCategory(@RequestBody @Valid CategoryCreateRequestDto request) {
         return categoryService.createCategory(request);
     }
 
@@ -35,7 +37,7 @@ public class CategoryApiController {
     }
 
     @PatchMapping
-    public void editCategoryName(@RequestBody CategoryEditNameRequestDto request) {
+    public void editCategoryName(@RequestBody @Valid CategoryEditNameRequestDto request) {
         categoryService.editCategoryName(request);
     }
 }

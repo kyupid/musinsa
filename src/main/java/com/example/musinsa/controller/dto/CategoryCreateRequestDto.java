@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 @Getter
 @NoArgsConstructor
@@ -15,6 +15,6 @@ public class CategoryCreateRequestDto {
     @Nullable
     private Integer parentId;
 
-    @NotNull
+    @NotEmpty
     private String name;
 }
