@@ -33,4 +33,6 @@ public interface CategoryDao {
                            @Param("newName") String newName);
 
     boolean existsById(Integer parentId);
+
+    void dropTable();
 }

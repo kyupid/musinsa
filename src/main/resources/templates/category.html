@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>카테고리</title>
+    <link rel="shortcut icon" href="#">
 </head>
 <body>
 </body>
@@ -29,7 +30,7 @@
         });
 
         if (location.pathname === '/') {
-            resultHTML += `<br><a class="rootC" href="#">root 카테고리 생성</a>`
+            resultHTML += `<br><a class="rootC" href="#">root 카테고리 생성</a>|<a class="dropTable" href="#">초기화</a>`
         } else {
             resultHTML += `<br><a href="/">홈으로 돌아가기</a>`
         }
@@ -60,7 +61,7 @@
                     location.reload();
                 },
                 error: function () {
-                    alert("예기치못한에러");
+                    location.reload();
                 }
             })
         })
@@ -83,7 +84,7 @@
                     location.reload();
                 },
                 error: function () {
-                    alert("예기치못한에러");
+                    location.reload();
                 }
             })
         })
@@ -108,7 +109,7 @@
                     location.reload();
                 },
                 error: function () {
-                    alert("예기치못한에러");
+                    location.reload();
                 }
             })
         })
@@ -127,6 +128,22 @@
                     },
                     error: function () {
                         alert("예기치못한에러");
+                    }
+                })
+            }
+        })
+
+        $(".dropTable").on("click", function () {
+            if ((confirm("초기화. 진행?"))) {
+                $.ajax({
+                    url: "/api/dropTable",
+                    method: "GET",
+                    success: function () {
+                        location.reload();
+                        alert("초기화 완료");
+                    },
+                    error: function () {
+                        location.reload();
                     }
                 })
             }
