@@ -13,6 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,22 +72,31 @@ class CategoryServiceTest {
         // level 2
         int idAfterSaving = 0;
         for (int i = 0; i < 10; i++) {
-            idAfterSaving = categoryService.createCategory(childCategoryCreateRequest(i + 10, TEST_CATEGORY_NAME));
+            idAfterSaving = idAfterSavingByCreateRequestDto(childCategoryCreateRequest(i + 10, TEST_CATEGORY_NAME));
+
         }
 
         // 마지막 생성한 카테고리에 대한 자식 -> 자식 -> 자식 -> ... 10개 생성
         for (int i = 0; i < 10; i++) {
-            idAfterSaving = categoryService.createCategory(childCategoryCreateRequest(idAfterSaving, TEST_CATEGORY_NAME));
+            idAfterSaving = idAfterSavingByCreateRequestDto(childCategoryCreateRequest(idAfterSaving, TEST_CATEGORY_NAME));
         }
 
         return categoryDao.findAll();
+    }
+
+    private int idAfterSavingByCreateRequestDto(CategoryCreateRequestDto request) {
+        return categoryService.createCategory(request)
+                .getCategories().stream()
+                .mapToInt(category -> category.getId())
+                .max()
+                .orElseThrow(NoSuchElementException::new);
     }
 
     @Test
     void 첫_루트_카테고리_저장하는_테스트() {
         //given
         CategoryCreateRequestDto request = rootCategoryCreateRequest(TEST_CATEGORY_NAME);
-        Integer id = categoryService.createCategory(request);
+        Integer id = idAfterSavingByCreateRequestDto(request);
 
         //when
         Category category = categoryDao.findById(id);
@@ -97,12 +107,14 @@ class CategoryServiceTest {
         assertThat(category.getCode()).isEqualTo(FIRST_CODE);
     }
 
+
+
     @Test
     void 두번째_루트_카테고리_저장하는_테스트() {
         //given
         saveTestFirstRootCategory();
         CategoryCreateRequestDto request = rootCategoryCreateRequest(TEST_CATEGORY_NAME);
-        Integer id = categoryService.createCategory(request);
+        Integer id = idAfterSavingByCreateRequestDto(request);
 
         //when
         Category category = categoryDao.findById(id);
@@ -119,7 +131,7 @@ class CategoryServiceTest {
         log.info("Category: {}", firstRootCategoryId);
 
         CategoryCreateRequestDto request = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
-        Integer id = categoryService.createCategory(request);
+        Integer id = idAfterSavingByCreateRequestDto(request);
 
         //when
         Category category = categoryDao.findById(id);
@@ -136,7 +148,7 @@ class CategoryServiceTest {
         CategoryCreateRequestDto childRequest = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
         categoryService.createCategory(childRequest);
         CategoryCreateRequestDto childRequest2 = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
-        Integer id = categoryService.createCategory(childRequest2);
+        Integer id = idAfterSavingByCreateRequestDto(childRequest2);
 
         //when
         Category category = categoryDao.findById(id);
@@ -151,9 +163,9 @@ class CategoryServiceTest {
         //given
         Integer firstRootCategoryId = saveTestFirstRootCategory();
         CategoryCreateRequestDto childRequest = childCategoryCreateRequest(firstRootCategoryId, TEST_CATEGORY_NAME);
-        Integer rootChildId = categoryService.createCategory(childRequest);
+        Integer rootChildId = idAfterSavingByCreateRequestDto(childRequest);
         CategoryCreateRequestDto childChildRequest = childCategoryCreateRequest(rootChildId, TEST_CATEGORY_NAME);
-        Integer id = categoryService.createCategory(childChildRequest);
+        Integer id = idAfterSavingByCreateRequestDto(childChildRequest);
 
         //when
         Category category = categoryDao.findById(id);
