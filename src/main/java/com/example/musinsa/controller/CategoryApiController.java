@@ -1,6 +1,7 @@
 package com.example.musinsa.controller;
 
 import com.example.musinsa.controller.dto.CategoryCreateRequestDto;
+import com.example.musinsa.controller.dto.CategoryEditNameRequestDto;
 import com.example.musinsa.controller.dto.CategoryResponseDto;
 import com.example.musinsa.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +32,10 @@ public class CategoryApiController {
     @DeleteMapping("/{selectedId}")
     public void deleteCategory(@PathVariable Integer selectedId) {
         categoryService.deleteCategories(selectedId);
+    }
+
+    @PatchMapping
+    public void editCategoryName(@RequestBody CategoryEditNameRequestDto request) {
+        categoryService.editCategoryName(request);
     }
 }
