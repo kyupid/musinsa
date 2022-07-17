@@ -1,3 +1,5 @@
+drop table if exists category;
+
 create table category
 (
     id int auto_increment,
